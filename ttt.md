@@ -47,4 +47,13 @@ pseudocode:
 		-maybe check if every div inside array has the same id, then if index one of each has the same id, then diagonal
 		-if someone has won, change win = true, store who won 
 
+-fix message "AI wins"
+-appending wins message 
+
+EXTRA:
+-style css (add skeleton, etc)
+-animate comp move so there is a time lapse 
+-create message boxes for player wins with text on top
+-change images for boxes
+-refactor code
 

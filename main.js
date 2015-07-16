@@ -1,7 +1,7 @@
 console.log('linked');
 
 $(document).ready(function() {
-
+	var game = "";
 	var board =[];
 	var win = false;
 	var click = 0;
@@ -9,8 +9,23 @@ $(document).ready(function() {
 	player1wins = 0;
 	player2wins = 0;
 
-	function setBoard (col, row) {
+	function choosePlayerOrAI () {
+		$('#two-players').click(function(){
+			game = "playerGame";
+			resetBoard();
+			$('#player-one-wins').children().text("Player One Total Wins: ");
+			$('#player-two-wins').children().text("Player Two Total Wins: ");
+		});
+		$('#play-computer').click(function(){
+			game = "computerGame";
+			resetBoard();
+			$('#player-one-wins').children().text("Human Player Total Wins: ");
+			$('#player-two-wins').children().text("AI Total Wins: ");
+		});
+	}
+	choosePlayerOrAI();
 
+	function setBoard (col, row) {
 
 		for (j=0; j<row; j++){
 			var createRow = $('<div class="row" id="' + j + '"></div>');
@@ -21,27 +36,37 @@ $(document).ready(function() {
 
 				piece.click(function clickBoardPiece(){
 
+					console.log(click);
 					var colId = $(this).attr('id');
 					var rowId = $(this).parent().attr('id');
 
-					if (win === false) {
-						if (click % 2 === 0) {
-							board[rowId][colId] = "Player 1";
-							$(this).css('background-color', 'red');
-						} else {
-							board[rowId][colId] = "Player 2";
-							$(this).css('background-color', 'yellow');
-						}
-						click++;
+					if (game === "") {
+						alert("Please choose player game or AI game");
+					} else if (game === "playerGame") {
+						if (win === false && board[rowId][colId] === "") {
+							if (click % 2 === 0) {
+								board[rowId][colId] = "Player 1";
+								$(this).css('background-color', 'red');
+							} else {
+								board[rowId][colId] = "Player 2";
+								$(this).css('background-color', 'yellow');
+							}
+						} 
+					} else if (game === "computerGame"){
+							if (win === false && board[rowId][colId] === "") {
+								board[rowId][colId] = "Player 1";
+								$(this).css('background-color', 'red');
+
+								if (win === false && board[0].indexOf("") !== -1) {
+									var compMove = getCompMove();
+									console.log(compMove);
+									var compBox = $('.row').eq(compMove[0]).find('#' + compMove[1]);
+									compBox.css('background-color', 'yellow');									
+								} 
+							}
 					}
-					var winner = calculateWin();	
-					if (winner === "Player 1") {
-						player1wins++;
-						$('#player-one-wins').html("<p>Player One Total Wins: " + player1wins + "</p>");
-					} else if (winner === "Player 2") {
-						player2wins++;
-						$('#player-two-wins').html("<p>Player Two Total Wins: " + player2wins + "</p>");
-					}	
+					click++;	
+					updateWins();
 				});				
 				columns.push("");
 				createRow.append(piece);			
@@ -52,6 +77,17 @@ $(document).ready(function() {
 		}
 	}	
 	setBoard(3, 3);
+
+	function updateWins () {
+		var winner = calculateWin();
+		if (winner === "Player 1") {
+			player1wins++;
+			$('#player-one-wins').children().append(player1wins);
+		} else if (winner === "Player 2") {
+			player2wins++;
+			$('#player-two-wins').children().append(player2wins);
+		}	
+	}
 
 	function setPlayerMoves () {
 		if (win === false) {
@@ -100,21 +136,24 @@ $(document).ready(function() {
 			}
 	}
 
-	$('button').click(function resetBoard () {
+	$('#reset-board').click(resetBoard);
+	function resetBoard() {
 		$('.container').html(""); 
 		$('#message-box').text('');
 		win = false;
 		board =[];
 		click = 0;
 		setBoard(3,3);
-	});
-
-
-
-	function playComputer () {
-		
 	}
 
-console.log(board);
+	function getCompMove () {
+			var row = Math.floor(Math.random()*(board.length));			
+			var col = Math.floor(Math.random()*(board[row].length));
+				while ((board[row][col] !== "Player 1") && (board[row][col] !== "Player 2")) {
+					board[row][col] = "Player 2";
+					return [row, col];
+				}
+			return getCompMove(); 	
+	}
 
 });
