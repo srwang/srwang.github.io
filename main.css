@@ -20,3 +20,8 @@ container {
 	width: 200px;
 	border: 1px solid;
 }
+
+button {
+	font-size: 1em;
+	width: 200px;
+}

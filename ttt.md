@@ -47,3 +47,4 @@ pseudocode:
 		-maybe check if every div inside array has the same id, then if index one of each has the same id, then diagonal
 		-if someone has won, change win = true, store who won 
 
+
