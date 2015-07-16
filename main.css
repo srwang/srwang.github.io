@@ -1,0 +1,16 @@
+html {
+	font-family: Futura, sans-serif;
+}
+
+container {
+
+}
+
+
+.square {
+	height: 200px;
+	width: 200px;
+	background-color: lightblue;
+	margin: 5px;
+	display: inline-block;
+}
