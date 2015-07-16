@@ -4,6 +4,7 @@ $(document).ready(function() {
 
 	var board =[];
 	var win = false;
+	var click = 0;
 
 	function setBoard (col, row) {
 
@@ -15,7 +16,6 @@ $(document).ready(function() {
 			for (i=0; i<col; i++) {					
 				var piece = $('<div class="square" id="' + i + '"></div>');
 
-				var click = 0;
 				piece.click(function clickBoardPiece(){
 
 					var colId = $(this).attr('id');
@@ -23,41 +23,60 @@ $(document).ready(function() {
 
 					if (win === false) {
 						if (click % 2 === 0) {
-							board[rowId][colId] = "player1";
+							board[rowId][colId] = "Player 1";
 							$(this).css('background-color', 'red');
 						} else {
-							board[rowId][colId] = "player2";
+							board[rowId][colId] = "Player 2";
 							$(this).css('background-color', 'yellow');
 						}
 						click++;
-					}					
+					}
+					calculateWin();				
 				});				
 				columns.push("");
 				createRow.append(piece);			
 			}
 
 			board.push(columns);
-			// console.log(board[0][0])
 			$('.container').append(createRow);
 		}
 	}	
 	setBoard(3, 3);
 
 
-	function calculateWin (arr) {
+	function calculateWin () {
 
-	for (var i =0; i<arr[0].length; i++) {
-		if (arr[0][i] !== arr[0][0]) {
-			return
-		} else {
+		for (var j=0; j<board.length; j++) {
 
+			// console.log (board[j]);
+
+			// if (board[j][0] === board[j][1]) {
+			// 	console.log(true)
+			// } else { console.log(false)}
+
+			if ((board[j][0]!=="") && (board[j][0] === board[j][1]) && (board[j][1] === board[j][2])) {
+				$('#message-box').text(board[j][1] + ' wins!');
+				win = true;
+			}
+		}
+
+		for (var i=0; i<board[0].length; i++) {		
+			if ((board[0][i]!=="") && (board[0][i]=== board[1][i]) && (board[1][i] === board[2][i])){
+				$('#message-box').text(board[0][i] + ' wins!');
+				win = true;	
+			}
+		}
+
+		if (board[1][1] !== "") {
+			if ((board[1][1] === board[0][0]) && (board[0][0]=== board[2][2]) || 
+				(board[1][1] === board[0][2]) && ((board[0][2]) === board[2][0])) {
+				$('#message-box').text(board[1][1] + ' wins!');
+				win = true;	
+			}
 		}
 	}
 
-
-	}
-	calculateWin(board);
-
+console.log(board);
 
 // -create 9 boxes (somehow)
 // -maybe make a constructor for columns, then push the objects into an array

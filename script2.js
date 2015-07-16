@@ -1,33 +1,10 @@
-	var setBoard = function board (row, col) {
-		this.render = function () {
-			for (i=1; i=row; i++)
-			{
-				var createRow = $('<div class="row" id="row' + i + '"></div>');
-				
-				for (i=1; i=col; i++) {					
-					var piece = $('<div class="square" id="col' + i + '"></div>');
-					var val = 0;
-					// piece.toggle(function(){
-					// 	if () {
-
-					// 	}
-					// })
-					createRow.append(piece);				
+					if (arr[j][i] !== arr[j][0]) {
+						return
+					} else if ((arr[j][arr[j].length-1] === arr[j][0]) && (arr[j][0])!== "") {
+						$('#message-box').text(arr[j][i] + ' wins!');
+						win = true;
+					}
 				}
-
-				$('.container').append(createRow);
-			}
-		}
-	}
-	var board = new setBoard(3, 3);
-	board.render();
-
-debugger;
-
-	function playerOne () {
-		val = 1;
-
-	}
 
 	// var columns = [];
 // var board = [];
