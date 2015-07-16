@@ -2,43 +2,61 @@ console.log('linked');
 
 $(document).ready(function() {
 
-	function setBoard (col, row) {
-		var board =[];
+	var board =[];
+	var win = false;
 
-		for (j=1; j<row+1; j++){
-			var createRow = $('<div class="row" id="row' + j + '"></div>');
+	function setBoard (col, row) {
+
+
+		for (j=0; j<row; j++){
+			var createRow = $('<div class="row" id="' + j + '"></div>');
 			
 			var columns = [];
-			for (i=1; i<col+1; i++) {					
-				var piece = $('<div class="square" id="col' + i + '"></div>');
+			for (i=0; i<col; i++) {					
+				var piece = $('<div class="square" id="' + i + '"></div>');
 
 				var click = 0;
 				piece.click(function clickBoardPiece(){
-					click++;
-					if (click % 2 === 0) {
-						$(this).attr('id', 'player1');
-						// board[j][i] = "player1";
-						// console.log(board[j][i]);
-						// console.log(board);
 
-					} else {
-						$(this).attr('id', 'player2');
-					// 	board[j][i] = "player2";
-					// 	console.log(board[j][i]);
-					// 	console.log(board);
-					}
-					console.log(click);
-				});
-				
-				// columns.push("");
+					var colId = $(this).attr('id');
+					var rowId = $(this).parent().attr('id');
+
+					if (win === false) {
+						if (click % 2 === 0) {
+							board[rowId][colId] = "player1";
+							$(this).css('background-color', 'red');
+						} else {
+							board[rowId][colId] = "player2";
+							$(this).css('background-color', 'yellow');
+						}
+						click++;
+					}					
+				});				
+				columns.push("");
 				createRow.append(piece);			
 			}
 
-			// board.push(columns);
+			board.push(columns);
+			// console.log(board[0][0])
 			$('.container').append(createRow);
 		}
 	}	
 	setBoard(3, 3);
+
+
+	function calculateWin (arr) {
+
+	for (var i =0; i<arr[0].length; i++) {
+		if (arr[0][i] !== arr[0][0]) {
+			return
+		} else {
+
+		}
+	}
+
+
+	}
+	calculateWin(board);
 
 
 // -create 9 boxes (somehow)
