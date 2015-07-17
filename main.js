@@ -58,7 +58,6 @@ $(document).ready(function() {
 
 								if (win === false && click<=3) {
 									var compMove = getCompMove();
-									console.log(compMove);
 									var compBox = $('.row').eq(compMove[0]).find('#' + compMove[1]);
 									compBox.css('background-color', 'yellow');									
 								} 
@@ -146,44 +145,12 @@ $(document).ready(function() {
 	}
 
 	function getCompMove () {
-		// var countOne = 0;
-		// var countTwo = 0;
-		// for (var row=0; row<board.length; row++) {
+		//counter horizontal
+		for (var row=0; row<board.length; row++) {
+		var countOne = 0;
+		var countTwo = 0;
 
-		// 		for (var col = 0; col < board[row].length; col++) {
-		// 			return occupyLastNondiagonalSpace();
-		// 		}	
-		// }
-
-		for (var col=0; col<board[0].length; col++) {
-			var countOne = 0;
-			var countTwo = 0;
-			var rowArr = [];
-			for (var row =0; row < board.length; row ++) {
-				rowArr.push(board[row][col]);
-				console.log(rowArr);
-				if (board[row][col] === "Player 1") {
-						countOne++;
-					}
-					if (board[row][col] === "Player 2") {
-						countTwo++;
-					} 				
-					if (countTwo === (board.length - 1) && rowArr.length===3 && rowArr.indexOf("") !== -1) {
-						row = rowArr.indexOf("");
-						board[row][col] = "Player 2";
-						return [row, col];					
-					}  else if (countOne === (board.length - 1) && rowArr.length===3 && rowArr.indexOf("") !== -1) {
-						row = rowArr.indexOf("");
-						console.log(rowArr);
-						console.log(row);
-						board[row][col] = "Player 2";
-						return [row, col];	
-					}
-			}
-		}
-		return findRandomMove();
-
-		function occupyLastNondiagonalSpace () {
+				for (var col = 0; col < board[row].length; col++) {
 					if (board[row][col] === "Player 1") {
 						countOne++;
 					}
@@ -200,11 +167,83 @@ $(document).ready(function() {
 						board[row][col] = "Player 2";
 						return [row, col];	
 					}
-					countOne = 0;
-					countTwo = 0;
+				}	
 		}
 
+		//counter vertical
+		for (var col=0; col<board[0].length; col++) {
+			var countOne = 0;
+			var countTwo = 0;
+			var rowArr = [];
+			for (var row =0; row < board.length; row ++) {
+				rowArr.push(board[row][col]);
+				if (board[row][col] === "Player 1") {
+						countOne++;
+					}
+					if (board[row][col] === "Player 2") {
+						countTwo++;
+					} 				
+					if (countTwo === (board.length - 1) && rowArr.length===3 && rowArr.indexOf("") !== -1) {
+						row = rowArr.indexOf("");
+						board[row][col] = "Player 2";
+						return [row, col];					
+					}  else if (countOne === (board.length - 1) && rowArr.length===3 && rowArr.indexOf("") !== -1) {
+						row = rowArr.indexOf("");
+						board[row][col] = "Player 2";
+						return [row, col];	
+					}
+			}
+		}
+
+		//counter diagonal
+			var diagArrOne = [];
+			var diagArrTwo = [];
+			var countOne = 0;
+			var countTwo = 0;
+			for (var i=0; i<board.length; i++) {
+				diagArrOne.push(board[i][i]);
+				diagArrTwo.push(board[i][(board.length - 1 - i)]);
+			}
+			for (var j=0; j<diagArrOne.length; j++) {
+				if (diagArrOne[j] === "Player 1") {
+					countOne++;
+				} else if (diagArrOne[j] === "Player 2") {
+					countTwo++;					
+				} 
+				if (countTwo === (board.length -1) && diagArrOne.length === 3 && diagArrOne.indexOf("") !== -1) {
+					var row = diagArrOne.indexOf("");
+					board[row][row] = "Player 2";
+					return[ row, row];
+				}
+				if (countOne === (board.length -1) && diagArrOne.length === 3 && diagArrOne.indexOf("") !== -1) {
+					var row = diagArrOne.indexOf("");
+					board[row][row] = "Player 2";
+					return [row, row];
+				}
+			}
+
+			for(var k=0; k<diagArrTwo.length; k++) {
+				if (diagArrTwo[k] === "Player 1") {
+					countOne++;
+				} else if (diagArrOne[k] === "Player 2") {
+					countTwo++;		  			
+				} 
+				if (countTwo === (board.length -1) && diagArrTwo.length === 3 && diagArrTwo.indexOf("") !== -1) {
+					row = diagArrTwo.indexOf("");
+					board[row][board.length - 1 - row] = "Player 2"
+					return[row, (board.length-1 -row)];
+				}
+				if (countOne === (board.length -1) && diagArrTwo.length === 3 && diagArrTwo.indexOf("") !== -1) {
+					row = diagArrTwo.indexOf("");
+					board[row][board.length - 1 - row] = "Player 2"
+					return[row, (board.length-1 -row)];
+				}
+			}
+
+		return findRandomMove();
+
 		function findRandomMove () {
+			console.log("clicked")
 			var row = Math.floor(Math.random()*(board.length));			
 			var col = Math.floor(Math.random()*(board[row].length));
 				if (board[row][col] === "") {
@@ -215,4 +254,36 @@ $(document).ready(function() {
 				}
 		}
 	}
+
+	$('#save-game').click(function() {
+		// $(this).toggle(function(){
+			sessionStorage.setItem("board", board);
+		// 	$(this).text("Restore last saved game");
+
+		// });
+
+	});
+
+	$('#restore-game').click(function(){
+	//fix to make interactive based on initial board length input from user
+			var savedBoard = sessionStorage.getItem("board").split(",");
+			var newBoard = [];
+
+			for (i=0; i<board.length; i++) {
+				newBoard.push(savedBoard.slice(i*board.length, (i+1)*board.length))
+			}
+
+			resetBoard();
+
+			for (i=0; i<newBoard.length; i++){
+				for (j=0; j<newBoard[0].length; j++) {
+					if (newBoard[i][j]=== "Player 1") {
+						$('.row').eq(i).find('#' + j).css('background-color', 'red');  
+					} else if (newBoard[i][j]=== "Player 2") {
+						$('.row').eq(i).find('#' + j).css('background-color', 'yellow'); 
+					}				
+				}
+			}
+
+	})
 });

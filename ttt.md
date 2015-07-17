@@ -48,6 +48,7 @@ pseudocode:
 		-if someone has won, change win = true, store who won 
 
 -fix message "AI wins"
+-refactor code including wins code
 -appending wins message 
 
 EXTRA:

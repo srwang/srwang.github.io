@@ -6,6 +6,19 @@
 					}
 				}
 
+		
+		// [0,0], [1,1], [2,2]
+		// [0,2], [1,1], [2,0]
+
+		// [0,0], [1,2], [2,2], [3,3], [4,4]
+
+		// [0, 0], [math.ceil(board.length / 2), math.ceil(board.length / 2)], [board.length-1, board.length-1]
+		// [0, board.length-1], 
+
+		// col increments up
+		// row increments down
+		// etc 
+
 	// var columns = [];
 // var board = [];
 
