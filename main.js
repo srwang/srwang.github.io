@@ -255,24 +255,16 @@ $(document).ready(function() {
 		}
 	}
 
-	$('#save-game').click(function() {
-		// $(this).toggle(function(){
-			sessionStorage.setItem("board", board);
-		// 	$(this).text("Restore last saved game");
-
-		// });
-
-	});
-
-	$('#restore-game').click(function(){
 	//fix to make interactive based on initial board length input from user
+	$('#save-game').click(function(){
+		if($(this).hasClass("saved")) {
+			game = sessionStorage.getItem("game");
 			var savedBoard = sessionStorage.getItem("board").split(",");
 			var newBoard = [];
 
 			for (i=0; i<board.length; i++) {
 				newBoard.push(savedBoard.slice(i*board.length, (i+1)*board.length))
 			}
-
 			resetBoard();
 
 			for (i=0; i<newBoard.length; i++){
@@ -284,6 +276,15 @@ $(document).ready(function() {
 					}				
 				}
 			}
+			$(this).text("Save game");
+			$(this).removeClass("saved");
+		} else {
+			sessionStorage.setItem("board", board);
+			sessionStorage.setItem("game", game);
+			$(this).text("Restore last saved game")
+			$(this).addClass("saved");
+		}
 
-	})
+	});
+
 });

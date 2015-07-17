@@ -49,7 +49,7 @@ pseudocode:
 
 -fix message "AI wins"
 -refactor code including wins code
--appending wins message 
+-fix wins messages ontop, in message box, and change so that the text changes when a restored game loads 
 
 EXTRA:
 -style css (add skeleton, etc)
