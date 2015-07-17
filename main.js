@@ -36,7 +36,6 @@ $(document).ready(function() {
 
 				piece.click(function clickBoardPiece(){
 
-					console.log(click);
 					var colId = $(this).attr('id');
 					var rowId = $(this).parent().attr('id');
 
@@ -57,7 +56,7 @@ $(document).ready(function() {
 								board[rowId][colId] = "Player 1";
 								$(this).css('background-color', 'red');
 
-								if (win === false && board[0].indexOf("") !== -1) {
+								if (win === false && click<=3) {
 									var compMove = getCompMove();
 									console.log(compMove);
 									var compBox = $('.row').eq(compMove[0]).find('#' + compMove[1]);
@@ -147,13 +146,40 @@ $(document).ready(function() {
 	}
 
 	function getCompMove () {
-			var row = Math.floor(Math.random()*(board.length));			
-			var col = Math.floor(Math.random()*(board[row].length));
-				while ((board[row][col] !== "Player 1") && (board[row][col] !== "Player 2")) {
+
+//if player one has taken over all but one (i.e 2) spaces in a row, column, or diagonal 
+		for (var row=0; row<board.length; row++) {
+				var countOne = 0;
+				var countTwo = 0;
+				for (var col = 0; col < board[row].length; col++) {
+					if (board[row][col] === "Player 1") {
+						countOne++;
+					}
+					if (board[row][col] === "Player 2") {
+						countTwo++;
+					} 
+				}	
+				if ((countTwo === (board[row].length - 1)) && (board[row].indexOf("") !== -1)) {
+					col = board[row].indexOf("");
 					board[row][col] = "Player 2";
-					return [row, col];
+					return [row, col];					
+				}  else if ((countOne === (board[row].length - 1)) && (board[row].indexOf("") !== -1)) {
+					col = board[row].indexOf("");
+					board[row][col] = "Player 2";
+					return [row, col];	
 				}
-			return getCompMove(); 	
+		}
+		return findRandomMove();
 	}
 
+	function findRandomMove () {
+		var row = Math.floor(Math.random()*(board.length));			
+		var col = Math.floor(Math.random()*(board[row].length));
+			if (board[row][col] === "") {
+				board[row][col] = "Player 2";
+				return [row, col];
+			} else {
+				return findRandomMove(); 
+			}
+	}
 });
