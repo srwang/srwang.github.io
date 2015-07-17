@@ -146,40 +146,73 @@ $(document).ready(function() {
 	}
 
 	function getCompMove () {
+		// var countOne = 0;
+		// var countTwo = 0;
+		// for (var row=0; row<board.length; row++) {
 
-//if player one has taken over all but one (i.e 2) spaces in a row, column, or diagonal 
-		for (var row=0; row<board.length; row++) {
-				var countOne = 0;
-				var countTwo = 0;
-				for (var col = 0; col < board[row].length; col++) {
+		// 		for (var col = 0; col < board[row].length; col++) {
+		// 			return occupyLastNondiagonalSpace();
+		// 		}	
+		// }
+
+		for (var col=0; col<board[0].length; col++) {
+			var countOne = 0;
+			var countTwo = 0;
+			var rowArr = [];
+			for (var row =0; row < board.length; row ++) {
+				rowArr.push(board[row][col]);
+				console.log(rowArr);
+				if (board[row][col] === "Player 1") {
+						countOne++;
+					}
+					if (board[row][col] === "Player 2") {
+						countTwo++;
+					} 				
+					if (countTwo === (board.length - 1) && rowArr.length===3 && rowArr.indexOf("") !== -1) {
+						row = rowArr.indexOf("");
+						board[row][col] = "Player 2";
+						return [row, col];					
+					}  else if (countOne === (board.length - 1) && rowArr.length===3 && rowArr.indexOf("") !== -1) {
+						row = rowArr.indexOf("");
+						console.log(rowArr);
+						console.log(row);
+						board[row][col] = "Player 2";
+						return [row, col];	
+					}
+			}
+		}
+		return findRandomMove();
+
+		function occupyLastNondiagonalSpace () {
 					if (board[row][col] === "Player 1") {
 						countOne++;
 					}
 					if (board[row][col] === "Player 2") {
 						countTwo++;
 					} 
-				}	
-				if ((countTwo === (board[row].length - 1)) && (board[row].indexOf("") !== -1)) {
-					col = board[row].indexOf("");
+						
+					if ((countTwo === (board[row].length - 1)) && (board[row].indexOf("") !== -1)) {
+						col = board[row].indexOf("");
+						board[row][col] = "Player 2";
+						return [row, col];					
+					}  else if ((countOne === (board[row].length - 1)) && (board[row].indexOf("") !== -1)) {
+						col = board[row].indexOf("");
+						board[row][col] = "Player 2";
+						return [row, col];	
+					}
+					countOne = 0;
+					countTwo = 0;
+		}
+
+		function findRandomMove () {
+			var row = Math.floor(Math.random()*(board.length));			
+			var col = Math.floor(Math.random()*(board[row].length));
+				if (board[row][col] === "") {
 					board[row][col] = "Player 2";
-					return [row, col];					
-				}  else if ((countOne === (board[row].length - 1)) && (board[row].indexOf("") !== -1)) {
-					col = board[row].indexOf("");
-					board[row][col] = "Player 2";
-					return [row, col];	
+					return [row, col];
+				} else {
+					return findRandomMove(); 
 				}
 		}
-		return findRandomMove();
-	}
-
-	function findRandomMove () {
-		var row = Math.floor(Math.random()*(board.length));			
-		var col = Math.floor(Math.random()*(board[row].length));
-			if (board[row][col] === "") {
-				board[row][col] = "Player 2";
-				return [row, col];
-			} else {
-				return findRandomMove(); 
-			}
 	}
 });
