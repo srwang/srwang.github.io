@@ -47,7 +47,7 @@ pseudocode:
 		-maybe check if every div inside array has the same id, then if index one of each has the same id, then diagonal
 		-if someone has won, change win = true, store who won 
 
--fix message "AI wins"
+-fix calc win function and, message "AI wins"
 -refactor code including wins code
 -fix wins messages ontop, in message box, and change so that the text changes when a restored game loads 
 
@@ -56,5 +56,7 @@ EXTRA:
 -animate comp move so there is a time lapse 
 -create message boxes for player wins with text on top
 -change images for boxes
+-change css based on how many boxes
+-add media query
 -refactor code
 

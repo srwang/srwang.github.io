@@ -1,24 +1,27 @@
 console.log('linked');
 
 $(document).ready(function() {
+	var boardSize = 4;
 	var game = "";
 	var board =[];
 	var win = false;
 	var click = 0;
 
-	player1wins = 0;
-	player2wins = 0;
+	var player1wins = 0;
+	var player2wins = 0;
+
+
 
 	function choosePlayerOrAI () {
 		$('#two-players').click(function(){
 			game = "playerGame";
-			resetBoard();
+			resetBoard(boardSize);
 			$('#player-one-wins').children().text("Player One Total Wins: ");
 			$('#player-two-wins').children().text("Player Two Total Wins: ");
 		});
 		$('#play-computer').click(function(){
 			game = "computerGame";
-			resetBoard();
+			resetBoard(boardSize);
 			$('#player-one-wins').children().text("Human Player Total Wins: ");
 			$('#player-two-wins').children().text("AI Total Wins: ");
 		});
@@ -64,7 +67,7 @@ $(document).ready(function() {
 							}
 					}
 					click++;	
-					updateWins();
+					calculateWin();
 				});				
 				columns.push("");
 				createRow.append(piece);			
@@ -74,83 +77,125 @@ $(document).ready(function() {
 			$('.container').append(createRow);
 		}
 	}	
-	setBoard(3, 3);
+	setBoard(boardSize, boardSize);
 
-	function updateWins () {
-		var winner = calculateWin();
-		if (winner === "Player 1") {
-			player1wins++;
-			$('#player-one-wins').children().append(player1wins);
-		} else if (winner === "Player 2") {
-			player2wins++;
-			$('#player-two-wins').children().append(player2wins);
-		}	
-	}
-
-	function setPlayerMoves () {
-		if (win === false) {
-			if (click % 2 === 0) {
-				board[rowId][colId] = "Player 1";
-				$(this).css('background-color', 'red');
-			} else {
-				board[rowId][colId] = "Player 2";
-				$(this).css('background-color', 'yellow');
-			}
-			click++;
-		}
-	}
 
 	function calculateWin () {
 
-		for (var j=0; j<board.length; j++) {
+		for (var row=0; row<boardSize; row++) {
+			var allEquals = true;
+				for (var col=0; col<boardSize; col++) {
+					if (board[row][col] !== board[row][0]) {
+						allEquals = false;
+					} 
+				}
+				if (allEquals === true && board[row].indexOf("") === -1) {
+					return displayWin(board[row][0]);
+				}
+		}
 
-			if ((board[j][0]!=="") && (board[j][0] === board[j][1]) && (board[j][1] === board[j][2])) {
-				$('#message-box').text(board[j][1] + ' wins!');
-				win = true;
-				return (board[j][0]);				
+		for (var col=0; col<boardSize; col++) {
+			var allEquals = true;
+			var rowArr = [];
+				for (var row=0; row<boardSize; row++) {
+					rowArr.push(board[row][col]);
+					if (board[row][col] !== board[0][col]) {
+						allEquals = false;
+					}
+				}
+				if (allEquals === true && rowArr.indexOf("") === -1) {
+					return displayWin(board[0][col]);
+				}
+		}
+
+
+		// function calcStraightWin (arr) {
+		// 	for (var i=0; i<boardSize; i++) {
+
+		// 		arr.push(board[row][col]);
+		// 		if (board[row][col] !== board[0][col]) {
+		// 			allEquals = false;
+		// 		}
+		// 	}
+		// 	if (allEquals === true && rowArr.indexOf("") === -1) {
+		// 		return displayWin(row);
+		// 	}
+		// }
+
+			var diagOne = [];
+			var diagTwo = [];
+		for (var i=0; i<boardSize; i++) {
+			diagOne.push(board[i][i])
+			diagTwo.push(board[i][boardSize-1-i])
+
+			calcDiagWin(diagOne);
+			calcDiagWin(diagTwo);
+
+			function calcDiagWin (arr) {
+			var allEquals = true;
+				for (j=0; j<boardSize; j++) {
+					if (arr[j] !== arr[0]) {
+						allEquals = false;
+					}
+				}
+			if (allEquals === true && arr.indexOf("") === -1) {
+					return displayWin(arr[0]);
+				}			
 			}
 		}
 
-		for (var i=0; i<board[0].length; i++) {		
-			if ((board[0][i]!=="") && (board[0][i]=== board[1][i]) && (board[1][i] === board[2][i])){
-				$('#message-box').text(board[0][i] + ' wins!');
-				win = true;	
-				return (board[0][i]);
-			}
+		var tie = true;
+		for (var i=0; i<boardSize; i++) {
+			if(board[i].indexOf("") !== -1) {
+				tie = false;
+			} 
 		}
+		if (tie === true) {
+			$('#message-box').text("It's a tie!");
+			win = true;
+			$('container').removeClass('won');
+		}			
+	
 
-		if (board[1][1] !== "") {
-			if ((board[1][1] === board[0][0]) && (board[0][0]=== board[2][2]) || 
-				(board[1][1] === board[0][2]) && ((board[0][2]) === board[2][0])) {
-				$('#message-box').text(board[1][1] + ' wins!');
-				win = true;	
-				return(board[1][1]);
+		function displayWin (player) {
+			$('#message-box').text(player + " wins!");
+			win = true;
+
+			if ($('container').hasClass('won')) {
+				if (player === "Player 1") {
+					player1wins++;
+					$('#player-one-wins').children().text(player1wins);
+				} else if (player === "Player 2") {
+					player2wins++;
+					$('#player-two-wins').children().text(player2wins);
+				}						
 			}
+			$('container').removeClass('won');
 		}
-
-		if(board[0].indexOf("") === -1 && board[1].indexOf("") === -1 && board[2].indexOf("") === -1) {
-				$('#message-box').text("It's a tie!");
-				win = true;
-			}
 	}
 
-	$('#reset-board').click(resetBoard);
-	function resetBoard() {
+
+	function resetBoard(boardSize) {
 		$('.container').html(""); 
 		$('#message-box').text('');
+		$('container').addClass('won');
 		win = false;
 		board =[];
 		click = 0;
-		setBoard(3,3);
+		setBoard(boardSize, boardSize);
 	}
+
+	$('#reset-board').click(function(){
+		resetBoard(boardSize);
+	});
 
 	function getCompMove () {
 		//counter horizontal
-		for (var row=0; row<board.length; row++) {
+		for (var row=0; row<boardSize; row++) {
 		var countOne = 0;
 		var countTwo = 0;
 
-				for (var col = 0; col < board[row].length; col++) {
+				for (var col = 0; col < boardSize; col++) {
 					if (board[row][col] === "Player 1") {
 						countOne++;
 					}
@@ -158,11 +203,11 @@ $(document).ready(function() {
 						countTwo++;
 					} 
 						
-					if ((countTwo === (board[row].length - 1)) && (board[row].indexOf("") !== -1)) {
+					if ((countTwo === (boardSize - 1)) && (board[row].indexOf("") !== -1)) {
 						col = board[row].indexOf("");
 						board[row][col] = "Player 2";
 						return [row, col];					
-					}  else if ((countOne === (board[row].length - 1)) && (board[row].indexOf("") !== -1)) {
+					}  else if ((countOne === (boardSize - 1)) && (board[row].indexOf("") !== -1)) {
 						col = board[row].indexOf("");
 						board[row][col] = "Player 2";
 						return [row, col];	
@@ -171,11 +216,11 @@ $(document).ready(function() {
 		}
 
 		//counter vertical
-		for (var col=0; col<board[0].length; col++) {
+		for (var col=0; col<boardSize; col++) {
 			var countOne = 0;
 			var countTwo = 0;
 			var rowArr = [];
-			for (var row =0; row < board.length; row ++) {
+			for (var row =0; row < boardSize; row ++) {
 				rowArr.push(board[row][col]);
 				if (board[row][col] === "Player 1") {
 						countOne++;
@@ -183,11 +228,11 @@ $(document).ready(function() {
 					if (board[row][col] === "Player 2") {
 						countTwo++;
 					} 				
-					if (countTwo === (board.length - 1) && rowArr.length===3 && rowArr.indexOf("") !== -1) {
+					if (countTwo === (boardSize - 1) && rowArr.length=== boardSize && rowArr.indexOf("") !== -1) {
 						row = rowArr.indexOf("");
 						board[row][col] = "Player 2";
 						return [row, col];					
-					}  else if (countOne === (board.length - 1) && rowArr.length===3 && rowArr.indexOf("") !== -1) {
+					}  else if (countOne === (boardSize - 1) && rowArr.length=== boardSize && rowArr.indexOf("") !== -1) {
 						row = rowArr.indexOf("");
 						board[row][col] = "Player 2";
 						return [row, col];	
@@ -200,9 +245,10 @@ $(document).ready(function() {
 			var diagArrTwo = [];
 			var countOne = 0;
 			var countTwo = 0;
-			for (var i=0; i<board.length; i++) {
+
+			for (var i=0; i<boardSize; i++) {
 				diagArrOne.push(board[i][i]);
-				diagArrTwo.push(board[i][(board.length - 1 - i)]);
+				diagArrTwo.push(board[i][(boardSize - 1 - i)]);
 			}
 			for (var j=0; j<diagArrOne.length; j++) {
 				if (diagArrOne[j] === "Player 1") {
@@ -210,40 +256,44 @@ $(document).ready(function() {
 				} else if (diagArrOne[j] === "Player 2") {
 					countTwo++;					
 				} 
-				if (countTwo === (board.length -1) && diagArrOne.length === 3 && diagArrOne.indexOf("") !== -1) {
+				if (countTwo === (boardSize -1) && diagArrOne.length === boardSize && diagArrOne.indexOf("") !== -1) {
 					var row = diagArrOne.indexOf("");
 					board[row][row] = "Player 2";
 					return[ row, row];
 				}
-				if (countOne === (board.length -1) && diagArrOne.length === 3 && diagArrOne.indexOf("") !== -1) {
+				if (countOne === (boardSize -1) && diagArrOne.length === boardSize && diagArrOne.indexOf("") !== -1) {
 					var row = diagArrOne.indexOf("");
 					board[row][row] = "Player 2";
 					return [row, row];
 				}
 			}
 
+			var countThree = 0;
+			var countFour = 0;
 			for(var k=0; k<diagArrTwo.length; k++) {
 				if (diagArrTwo[k] === "Player 1") {
-					countOne++;
+					countThree++;
+					console.log("total player 1 moves " + countOne)
 				} else if (diagArrOne[k] === "Player 2") {
-					countTwo++;		  			
+					countFour++;		  			
 				} 
-				if (countTwo === (board.length -1) && diagArrTwo.length === 3 && diagArrTwo.indexOf("") !== -1) {
+				console.log(diagArrTwo)
+				if (countThree === (boardSize -1) && diagArrTwo.length === boardSize && diagArrTwo.indexOf("") !== -1) {
+					console.log("entering if statement")
 					row = diagArrTwo.indexOf("");
-					board[row][board.length - 1 - row] = "Player 2"
-					return[row, (board.length-1 -row)];
+					board[row][boardSize - 1 - row] = "Player 2"
+					return[row, (boardSize -1 -row)];
 				}
-				if (countOne === (board.length -1) && diagArrTwo.length === 3 && diagArrTwo.indexOf("") !== -1) {
+				if (countFour === (boardSize -1) && diagArrTwo.length === boardSize && diagArrTwo.indexOf("") !== -1) {
 					row = diagArrTwo.indexOf("");
-					board[row][board.length - 1 - row] = "Player 2"
-					return[row, (board.length-1 -row)];
+					board[row][boardSize - 1 - row] = "Player 2"
+					return[row, (boardSize-1 -row)];
 				}
 			}
 
 		return findRandomMove();
 
 		function findRandomMove () {
-			console.log("clicked")
 			var row = Math.floor(Math.random()*(board.length));			
 			var col = Math.floor(Math.random()*(board[row].length));
 				if (board[row][col] === "") {
@@ -261,11 +311,12 @@ $(document).ready(function() {
 			game = sessionStorage.getItem("game");
 			var savedBoard = sessionStorage.getItem("board").split(",");
 			var newBoard = [];
+			var newBoardSize = parseInt(sessionStorage.getItem("boardSize"));
 
 			for (i=0; i<board.length; i++) {
 				newBoard.push(savedBoard.slice(i*board.length, (i+1)*board.length))
 			}
-			resetBoard();
+			resetBoard(newBoardSize);
 
 			for (i=0; i<newBoard.length; i++){
 				for (j=0; j<newBoard[0].length; j++) {
@@ -281,6 +332,7 @@ $(document).ready(function() {
 		} else {
 			sessionStorage.setItem("board", board);
 			sessionStorage.setItem("game", game);
+			sessionStorage.setItem("boardSize", boardSize);
 			$(this).text("Restore last saved game")
 			$(this).addClass("saved");
 		}
