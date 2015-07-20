@@ -1,50 +1,62 @@
-console.log('linked');
+console.log('yo');
 
 $(document).ready(function() {
-	var boardSize = 4;
-	var game = "";
+	var boardSize = 3;
+	var game = "playerGame";
 	var board =[];
 	var win = false;
 	var click = 0;
 
 	var player1wins = 0;
 	var player2wins = 0;
+	
 
+	$('#choose-player').change(function choosePlayerOrAI(){
+		game = $(this).val();
+		resetBoard(boardSize);
+		player1wins = 0;
+		player2wins = 0;
 
+		if (game==="playerGame") {
+			$('#player-one-text').text("Player 1 score:");
+			$('#player-two-text').text("Player 2 Score:");
+		} else if (game==="computerGame") {
+			$('#player-one-text').text("Human Player Score:");
+			$('#player-two-text').text("AI Score:");
+		}
+		changeSquareCSS(parseInt(boardSize));
+	})
 
-	function choosePlayerOrAI () {
-		$('#two-players').click(function(){
-			game = "playerGame";
-			resetBoard(boardSize);
-			$('#player-one-wins').children().text("Player One Total Wins: ");
-			$('#player-two-wins').children().text("Player Two Total Wins: ");
-		});
-		$('#play-computer').click(function(){
-			game = "computerGame";
-			resetBoard(boardSize);
-			$('#player-one-wins').children().text("Human Player Total Wins: ");
-			$('#player-two-wins').children().text("AI Total Wins: ");
-		});
+	$('#choose-board-size').change(function chooseBoardSize(){
+		boardSize = $(this).val();
+		resetBoard(boardSize);
+		changeSquareCSS(parseInt(boardSize));
+	})
+
+	function changeSquareCSS(boardSize) {
+		if (boardSize === 4) {
+			$('.square').css({height: 150, width: 150});
+		} else if (boardSize === 5) {
+			$('.square').css({height: 120, width: 120});
+		}
 	}
-	choosePlayerOrAI();
 
 	function setBoard (col, row) {
 
 		for (j=0; j<row; j++){
-			var createRow = $('<div class="row" id="' + j + '"></div>');
+			var createRow = $('<div class="myRow" id="' + j + '"></div>');
 			
 			var columns = [];
 			for (i=0; i<col; i++) {					
 				var piece = $('<div class="square" id="' + i + '"></div>');
 
 				piece.click(function clickBoardPiece(){
+					$("#message-box").text("Playing game...");
 
 					var colId = $(this).attr('id');
 					var rowId = $(this).parent().attr('id');
 
-					if (game === "") {
-						alert("Please choose player game or AI game");
-					} else if (game === "playerGame") {
+					if (game === "playerGame") {
 						if (win === false && board[rowId][colId] === "") {
 							if (click % 2 === 0) {
 								board[rowId][colId] = "Player 1";
@@ -55,16 +67,19 @@ $(document).ready(function() {
 							}
 						} 
 					} else if (game === "computerGame"){
-							if (win === false && board[rowId][colId] === "") {
-								board[rowId][colId] = "Player 1";
-								$(this).css('background-color', 'red');
+						if (win === false && board[rowId][colId] === "") {
+							board[rowId][colId] = "Player 1";
+							$(this).css('background-color', 'red');
 
-								if (win === false && click<=3) {
-									var compMove = getCompMove();
-									var compBox = $('.row').eq(compMove[0]).find('#' + compMove[1]);
-									compBox.css('background-color', 'yellow');									
-								} 
-							}
+							if (win === false && click<=3) {
+								var compMove = getCompMove();
+								var compBox = $('.myRow').eq(compMove[0]).find('#' + compMove[1]);
+								function changeToYellow () {
+									compBox.css('background-color', 'yellow');
+								}
+								window.setTimeout(changeToYellow, 250);									
+							} 								
+						} 
 					}
 					click++;	
 					calculateWin();
@@ -74,7 +89,7 @@ $(document).ready(function() {
 			}
 
 			board.push(columns);
-			$('.container').append(createRow);
+			$('.wrapper').append(createRow);
 		}
 	}	
 	setBoard(boardSize, boardSize);
@@ -107,20 +122,6 @@ $(document).ready(function() {
 					return displayWin(board[0][col]);
 				}
 		}
-
-
-		// function calcStraightWin (arr) {
-		// 	for (var i=0; i<boardSize; i++) {
-
-		// 		arr.push(board[row][col]);
-		// 		if (board[row][col] !== board[0][col]) {
-		// 			allEquals = false;
-		// 		}
-		// 	}
-		// 	if (allEquals === true && rowArr.indexOf("") === -1) {
-		// 		return displayWin(row);
-		// 	}
-		// }
 
 			var diagOne = [];
 			var diagTwo = [];
@@ -164,10 +165,10 @@ $(document).ready(function() {
 			if ($('container').hasClass('won')) {
 				if (player === "Player 1") {
 					player1wins++;
-					$('#player-one-wins').children().text(player1wins);
+					$('#player-one-wins').text(player1wins);
 				} else if (player === "Player 2") {
 					player2wins++;
-					$('#player-two-wins').children().text(player2wins);
+					$('#player-two-wins').text(player2wins);
 				}						
 			}
 			$('container').removeClass('won');
@@ -176,7 +177,7 @@ $(document).ready(function() {
 
 
 	function resetBoard(boardSize) {
-		$('.container').html(""); 
+		$('.wrapper').html(""); 
 		$('#message-box').text('');
 		$('container').addClass('won');
 		win = false;
@@ -190,55 +191,55 @@ $(document).ready(function() {
 	});
 
 	function getCompMove () {
-		//counter horizontal
-		for (var row=0; row<boardSize; row++) {
-		var countOne = 0;
-		var countTwo = 0;
+		// // counter horizontal
+		// for (var row=0; row<boardSize; row++) {
+		// var countOne = 0;
+		// var countTwo = 0;
 
-				for (var col = 0; col < boardSize; col++) {
-					if (board[row][col] === "Player 1") {
-						countOne++;
-					}
-					if (board[row][col] === "Player 2") {
-						countTwo++;
-					} 
-						
-					if ((countTwo === (boardSize - 1)) && (board[row].indexOf("") !== -1)) {
-						col = board[row].indexOf("");
-						board[row][col] = "Player 2";
-						return [row, col];					
-					}  else if ((countOne === (boardSize - 1)) && (board[row].indexOf("") !== -1)) {
-						col = board[row].indexOf("");
-						board[row][col] = "Player 2";
-						return [row, col];	
-					}
-				}	
-		}
+		// 	for (var col = 0; col < boardSize; col++) {
+		// 		if (board[row][col] === "Player 1") {
+		// 			countOne++;
+		// 		}
+		// 		if (board[row][col] === "Player 2") {
+		// 			countTwo++;
+		// 		} 
+					
+		// 		if ((countTwo === (boardSize - 1)) && (board[row].indexOf("") !== -1)) {
+		// 			col = board[row].indexOf("");
+		// 			board[row][col] = "Player 2";
+		// 			return [row, col];					
+		// 		}  else if ((countOne === (boardSize - 1)) && (board[row].indexOf("") !== -1)) {
+		// 			col = board[row].indexOf("");
+		// 			board[row][col] = "Player 2";
+		// 			return [row, col];	
+		// 		}
+		// 	}	
+		// }
 
-		//counter vertical
-		for (var col=0; col<boardSize; col++) {
-			var countOne = 0;
-			var countTwo = 0;
-			var rowArr = [];
-			for (var row =0; row < boardSize; row ++) {
-				rowArr.push(board[row][col]);
-				if (board[row][col] === "Player 1") {
-						countOne++;
-					}
-					if (board[row][col] === "Player 2") {
-						countTwo++;
-					} 				
-					if (countTwo === (boardSize - 1) && rowArr.length=== boardSize && rowArr.indexOf("") !== -1) {
-						row = rowArr.indexOf("");
-						board[row][col] = "Player 2";
-						return [row, col];					
-					}  else if (countOne === (boardSize - 1) && rowArr.length=== boardSize && rowArr.indexOf("") !== -1) {
-						row = rowArr.indexOf("");
-						board[row][col] = "Player 2";
-						return [row, col];	
-					}
-			}
-		}
+		// //counter vertical
+		// for (var col=0; col<boardSize; col++) {
+		// 	var countOne = 0;
+		// 	var countTwo = 0;
+		// 	var rowArr = [];
+		// 	for (var row =0; row < boardSize; row ++) {
+		// 		rowArr.push(board[row][col]);
+		// 		if (board[row][col] === "Player 1") {
+		// 				countOne++;
+		// 			}
+		// 			if (board[row][col] === "Player 2") {
+		// 				countTwo++;
+		// 			} 				
+		// 			if (countTwo === (boardSize - 1) && rowArr.length=== boardSize && rowArr.indexOf("") !== -1) {
+		// 				row = rowArr.indexOf("");
+		// 				board[row][col] = "Player 2";
+		// 				return [row, col];					
+		// 			}  else if (countOne === (boardSize - 1) && rowArr.length=== boardSize && rowArr.indexOf("") !== -1) {
+		// 				row = rowArr.indexOf("");
+		// 				board[row][col] = "Player 2";
+		// 				return [row, col];	
+		// 			}
+		// 	}
+		// }
 
 		//counter diagonal
 			var diagArrOne = [];
@@ -268,41 +269,38 @@ $(document).ready(function() {
 				}
 			}
 
-			var countThree = 0;
-			var countFour = 0;
-			for(var k=0; k<diagArrTwo.length; k++) {
-				if (diagArrTwo[k] === "Player 1") {
-					countThree++;
-					console.log("total player 1 moves " + countOne)
-				} else if (diagArrOne[k] === "Player 2") {
-					countFour++;		  			
-				} 
-				console.log(diagArrTwo)
-				if (countThree === (boardSize -1) && diagArrTwo.length === boardSize && diagArrTwo.indexOf("") !== -1) {
-					console.log("entering if statement")
-					row = diagArrTwo.indexOf("");
-					board[row][boardSize - 1 - row] = "Player 2"
-					return[row, (boardSize -1 -row)];
-				}
-				if (countFour === (boardSize -1) && diagArrTwo.length === boardSize && diagArrTwo.indexOf("") !== -1) {
-					row = diagArrTwo.indexOf("");
-					board[row][boardSize - 1 - row] = "Player 2"
-					return[row, (boardSize-1 -row)];
-				}
-			}
+		// 	var countThree = 0;
+		// 	var countFour = 0;
+		// 	for(var k=0; k<diagArrTwo.length; k++) {
+		// 		if (diagArrTwo[k] === "Player 1") {
+		// 			countThree++;
+		// 		} else if (diagArrOne[k] === "Player 2") {
+		// 			countFour++;		  			
+		// 		} 
+		// 		if (countThree === (boardSize -1) && diagArrTwo.length === boardSize && diagArrTwo.indexOf("") !== -1) {
+		// 			row = diagArrTwo.indexOf("");
+		// 			board[row][boardSize - 1 - row] = "Player 2"
+		// 			return[row, (boardSize -1 -row)];
+		// 		}
+		// 		if (countFour === (boardSize -1) && diagArrTwo.length === boardSize && diagArrTwo.indexOf("") !== -1) {
+		// 			row = diagArrTwo.indexOf("");
+		// 			board[row][boardSize - 1 - row] = "Player 2"
+		// 			return[row, (boardSize-1 -row)];
+		// 		}
+		// 	}
 
-		return findRandomMove();
+		// return findRandomMove();
 
-		function findRandomMove () {
-			var row = Math.floor(Math.random()*(board.length));			
-			var col = Math.floor(Math.random()*(board[row].length));
-				if (board[row][col] === "") {
-					board[row][col] = "Player 2";
-					return [row, col];
-				} else {
-					return findRandomMove(); 
-				}
-		}
+		// function findRandomMove () {
+		// 	var row = Math.floor(Math.random()*(board.length));			
+		// 	var col = Math.floor(Math.random()*(board[row].length));
+		// 		if (board[row][col] === "") {
+		// 			board[row][col] = "Player 2";
+		// 			return [row, col];
+		// 		} else {
+		// 			return findRandomMove(); 
+		// 		}
+		// }
 	}
 
 	//fix to make interactive based on initial board length input from user
@@ -321,9 +319,9 @@ $(document).ready(function() {
 			for (i=0; i<newBoard.length; i++){
 				for (j=0; j<newBoard[0].length; j++) {
 					if (newBoard[i][j]=== "Player 1") {
-						$('.row').eq(i).find('#' + j).css('background-color', 'red');  
+						$('.myRow').eq(i).find('#' + j).css('background-color', 'red');  
 					} else if (newBoard[i][j]=== "Player 2") {
-						$('.row').eq(i).find('#' + j).css('background-color', 'yellow'); 
+						$('.myRow').eq(i).find('#' + j).css('background-color', 'yellow'); 
 					}				
 				}
 			}
@@ -333,7 +331,7 @@ $(document).ready(function() {
 			sessionStorage.setItem("board", board);
 			sessionStorage.setItem("game", game);
 			sessionStorage.setItem("boardSize", boardSize);
-			$(this).text("Restore last saved game")
+			$(this).text("Restore game")
 			$(this).addClass("saved");
 		}
 

@@ -1,25 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" href="main.css">
+	<link rel="stylesheet" href="css/normalize.css">	
+	<link rel="stylesheet" href="css/skeleton.css">
+	<link href='http://fonts.googleapis.com/css?family=Crimson+Text' rel='stylesheet' type='text/css'>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
-	<h1>Tic Tac Toe</h1>
-		<button type="button" id="two-players">Begin a game with two human players</button>
-		<button type="button" id="play-computer">Begin a game against the computer</button>
-		<container class="won">
-			<div class="wins" id="player-one-wins"><p>Player One Total Wins: </p></div>
-			<div class="wins" id="player-two-wins"><p>Player Two Total Wins: </p></div>
-		</container>
-			<button type="button" id="save-game">Save game</button>
-<!-- 			<button type="button" id="restore-game">restore game</button> -->
-	<div class="container">
+	<header><h1>Tic Tac Toe</h1></header>
+
+	<div class="row">
+		<div class="wrapper nine columns">
+		</div>
+		<div class="three columns" id="player-panel">
+
+		<select name="choose-player" id="choose-player">
+			  <option value="playerGame" selected>Play with two humans</option> 
+			  <option value="computerGame">Play against AI</option>
+		</select>
+		<select name="choose-board-size" id="choose-board-size">
+			  <option value="3" selected>3 x 3</option> 
+			  <option value="4">4 x 4</option>
+			  <option value="5">5 x 5</option>
+		</select>
+			
+			<container class="won">
+				<p id="player-one-text">Player 1 Score:</p>
+				<div class="wins" id="player-one-wins"></div><br>
+				<p id="player-two-text">Player 2 Score:</p>
+				<div class="wins" id="player-two-wins"></div>
+			</container>
+				<button type="button" id="save-game">Save game</button>				
+
+			<div id="reset">
+				<div id="message-box">
+				</div>
+				<button type="button" id="reset-board">Another round?</button>
+			</div>
 	</div>
-	<div id="message-box">
-	</div>
-	<button type="button" id="reset-board">Play another round</button>
+
+	
 </body>
-  	<script src="main.js"></script>
+  	<script src="js/main.js"></script>
 </html>
