@@ -51,11 +51,9 @@ pseudocode:
 -fix wins messages ontop, in message box, and change so that the text changes when a restored game loads 
 
 EXTRA:
--create selectors for user to choose type of game and choose board size 
--change the score display
--fix rest of css on board 
--change css based on how many boxes
+-add modal box for player names
 -add hover and animate 
 -change images for boxes
+-add media query
 -refactor code
 

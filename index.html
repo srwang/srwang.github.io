@@ -9,12 +9,12 @@
 </head>
 
 <body>
-	<header><h1>Tic Tac Toe</h1></header>
+	<header><h1>Tic * Tac * Toe</h1></header>
 
 	<div class="row">
-		<div class="wrapper nine columns">
+		<div class="wrapper eight columns">
 		</div>
-		<div class="three columns" id="player-panel">
+		<div class="four columns" id="player-panel">
 
 		<select name="choose-player" id="choose-player">
 			  <option value="playerGame" selected>Play with two humans</option> 
@@ -25,19 +25,27 @@
 			  <option value="4">4 x 4</option>
 			  <option value="5">5 x 5</option>
 		</select>
+
+		<form action="demo_form.asp">
+			 Player 1 Name: <input type="text" name="player-one-name"><br>
+			 Player 2 Name: <input type="text" name="player-two-name"><br>
+		</form>
 			
 			<container class="won">
-				<p id="player-one-text">Player 1 Score:</p>
-				<div class="wins" id="player-one-wins"></div><br>
-				<p id="player-two-text">Player 2 Score:</p>
-				<div class="wins" id="player-two-wins"></div>
+				<div class="wins-message">
+					<p id="player-one-text">Player 1 Score: </p><p class="wins" id="player-one-wins"><p>
+				</div>
+<!-- 				<div class="wins" id="player-one-wins"></div><br> -->
+				<div class="wins-message">
+					<p id="player-two-text">Player 2 Score: </p><p class="wins" id="player-two-wins"></p>
+				</div>
+<!-- 				<div class="wins" id="player-two-wins"></div> -->
 			</container>
-				<button type="button" id="save-game">Save game</button>				
 
 			<div id="reset">
-				<div id="message-box">
-				</div>
-				<button type="button" id="reset-board">Another round?</button>
+				<div id="message-box"><p>Message box</p></div>
+				<button type="button" id="save-game">Save game</button>				
+				<button type="button" id="reset-board">Play Again</button>
 			</div>
 	</div>
 
