@@ -51,9 +51,5 @@ pseudocode:
 -fix wins messages ontop, in message box, and change so that the text changes when a restored game loads 
 
 EXTRA:
--add modal box for player names
--add hover and animate 
--change images for boxes
--add media query
 -refactor code
 

@@ -2,13 +2,16 @@ console.log('yo');
 
 $(document).ready(function() {
 	var boardSize = 3;
-	var game = "playerGame";
+	var game = "default";
 	var board =[];
 	var win = false;
 	var click = 0;
 
 	var player1wins = 0;
 	var player2wins = 0;
+
+	var nameOne = "";
+	var nameTwo = "";
 	
 
 	$('#choose-player').change(function choosePlayerOrAI(){
@@ -16,16 +19,29 @@ $(document).ready(function() {
 		resetBoard(boardSize);
 		player1wins = 0;
 		player2wins = 0;
+		$('#player-one-wins').text("");
+		$('#player-two-wins').text("");
 
 		if (game==="playerGame") {
 			$('#player-one-text').text("Player 1 score:");
 			$('#player-two-text').text("Player 2 Score:");
+			$('form').slideDown(600);
 		} else if (game==="computerGame") {
 			$('#player-one-text').text("Human Player Score:");
 			$('#player-two-text').text("AI Score:");
+			$('form').slideUp(600);
 		}
 		changeSquareCSS(boardSize);
 	})
+
+	$('#input-name').click(function getPlayerNames(){
+		nameOne = $('input').eq(0).val();
+		nameTwo = $('input').eq(1).val();
+		$('#player-one-text').text(nameOne + " Score:");
+		$('#player-two-text').text(nameTwo + " Score:");
+		$('form').slideUp(600);
+	});
+
 
 	$('#choose-board-size').change(function chooseBoardSize(){
 		boardSize = parseInt($(this).val());
@@ -48,15 +64,16 @@ $(document).ready(function() {
 			
 			var columns = [];
 			for (i=0; i<col; i++) {					
-				var piece = $('<div class="square" id="' + i + '"></div>');
+				var piece = $('<div class="square animated flipInX" id="' + i + '"></div>');
 
 				piece.click(function clickBoardPiece(){
 					$("#message-box").children().text("Playing game...");
 
 					var colId = $(this).attr('id');
 					var rowId = $(this).parent().attr('id');
-
-					if (game === "playerGame") {
+					if (game==="default") {
+						alert("Please choose two-player game or game against computer!");
+					} else if (game === "playerGame") {
 						if (win === false && board[rowId][colId] === "") {
 							if (click % 2 === 0) {
 								board[rowId][colId] = "Player 1";
@@ -164,18 +181,31 @@ $(document).ready(function() {
 	
 
 		function displayWin (player) {
-			$('#message-box').children().text(player + " wins!");
-			win = true;
 
 			if ($('container').hasClass('won')) {
 				if (player === "Player 1") {
 					player1wins++;
-					$('#player-one-wins').text(" " + player1wins);
+					$('#player-one-wins').text(player1wins);
 				} else if (player === "Player 2") {
 					player2wins++;
-					$('#player-two-wins').text(" " + player2wins);
+					$('#player-two-wins').text(player2wins);
 				}						
 			}
+			if (player === "Player 1") {
+				if (game === "playerGame") {
+					player = nameOne;
+				} else if (game ==="computerGame") {
+					player = "Human player";
+				}
+			} else if (player === "Player 2") {
+				if (game=== "playerGame") {
+					player = nameTwo;
+				} else if (game === "computerGame") {
+					player = "Computer"
+				}
+			}
+			$('#message-box').children().text(player + " wins!");
+			win = true;
 			$('container').removeClass('won');
 		}
 	}
@@ -312,6 +342,14 @@ function getCompMove () {
 	$('#save-game').click(function(){
 		if($(this).hasClass("saved")) {
 			game = sessionStorage.getItem("game");
+			if (game==="playerGame") {
+				$('#player-one-text').text(nameOne + " Score:");
+				$('#player-two-text').text(nameTwo + " Score:");
+			} else if (game==="computerGame") {
+				$('#player-one-text').text("Human Player Score:");
+				$('#player-two-text').text("AI Score:");
+			}
+
 			var savedBoard = sessionStorage.getItem("board").split(",");
 			var newBoard = [];
 			var newBoardSize = parseInt(sessionStorage.getItem("boardSize"));
@@ -337,6 +375,8 @@ function getCompMove () {
 			$('#message-box').children().text("Saved!");
 			sessionStorage.setItem("board", board);
 			sessionStorage.setItem("game", game);
+			sessionStorage.setItem("nameOne", nameOne);
+			sessionStorage.setItem("nameTwo", nameTwo);
 			sessionStorage.setItem("boardSize", boardSize);
 			$(this).text("Restore")
 			$(this).addClass("saved");

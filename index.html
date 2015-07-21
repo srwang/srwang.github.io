@@ -3,6 +3,7 @@
 <head>
 	<link rel="stylesheet" href="css/normalize.css">	
 	<link rel="stylesheet" href="css/skeleton.css">
+	<link rel="stylesheet" href="css/animate.css">
 	<link href='http://fonts.googleapis.com/css?family=Crimson+Text' rel='stylesheet' type='text/css'>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 	<link rel="stylesheet" href="css/main.css">
@@ -17,29 +18,29 @@
 		<div class="four columns" id="player-panel">
 
 		<select name="choose-player" id="choose-player">
-			  <option value="playerGame" selected>Play with two humans</option> 
-			  <option value="computerGame">Play against AI</option>
+			<option value="default" selected>Play with human or AI?</option>
+			<option value="playerGame">Play with two humans</option> 
+			<option value="computerGame">Play against AI</option>
 		</select>
 		<select name="choose-board-size" id="choose-board-size">
-			  <option value="3" selected>3 x 3</option> 
-			  <option value="4">4 x 4</option>
-			  <option value="5">5 x 5</option>
+			 <option value="3" selected>3 x 3</option> 
+			 <option value="4">4 x 4</option>
+			 <option value="5">5 x 5</option>
 		</select>
 
 		<form action="demo_form.asp">
-			 Player 1 Name: <input type="text" name="player-one-name"><br>
-			 Player 2 Name: <input type="text" name="player-two-name"><br>
+			 <input type="text" name="player" value="name 1">
+			 <input type="text" name="player" value = "name 2">
+			<button type="button" id="input-name">submit</button>
 		</form>
 			
 			<container class="won">
 				<div class="wins-message">
 					<p id="player-one-text">Player 1 Score: </p><p class="wins" id="player-one-wins"><p>
 				</div>
-<!-- 				<div class="wins" id="player-one-wins"></div><br> -->
 				<div class="wins-message">
 					<p id="player-two-text">Player 2 Score: </p><p class="wins" id="player-two-wins"></p>
 				</div>
-<!-- 				<div class="wins" id="player-two-wins"></div> -->
 			</container>
 
 			<div id="reset">
