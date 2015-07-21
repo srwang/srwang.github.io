@@ -372,6 +372,8 @@ function getCompMove () {
 			}
 			$(this).text("Save game");
 			$(this).removeClass("saved");
+			board = newBoard;
+			boardSize = newBoardSize;
 		} else {
 			$('#message-box').children().text("Saved!");
 			sessionStorage.setItem("board", board);
