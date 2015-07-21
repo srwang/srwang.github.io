@@ -359,6 +359,7 @@ function getCompMove () {
 			}
 			resetBoard(newBoardSize);
 			changeSquareCSS(newBoardSize);
+			click = parseInt(sessionStorage.getItem("click"));
 
 			for (i=0; i<newBoard.length; i++){
 				for (j=0; j<newBoard[0].length; j++) {
@@ -375,6 +376,7 @@ function getCompMove () {
 			$('#message-box').children().text("Saved!");
 			sessionStorage.setItem("board", board);
 			sessionStorage.setItem("game", game);
+			sessionStorage.setItem("click", click);
 			sessionStorage.setItem("nameOne", nameOne);
 			sessionStorage.setItem("nameTwo", nameTwo);
 			sessionStorage.setItem("boardSize", boardSize);
@@ -383,5 +385,6 @@ function getCompMove () {
 		}
 
 	});
+			console.log(click);
 
 });
