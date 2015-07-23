@@ -374,6 +374,8 @@ function getCompMove () {
 			$(this).removeClass("saved");
 			board = newBoard;
 			boardSize = newBoardSize;
+			player1wins = 0;
+			player2wins = 0;
 		} else {
 			$('#message-box').children().text("Saved!");
 			sessionStorage.setItem("board", board);
