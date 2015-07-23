@@ -341,14 +341,23 @@ function getCompMove () {
 	//fix to make interactive based on initial board length input from user
 	$('#save-game').click(function(){
 		if($(this).hasClass("saved")) {
-			game = sessionStorage.getItem("game");
-			if (game==="playerGame") {
+			var newGame = sessionStorage.getItem("game");
+			if (newGame==="playerGame") {
 				$('#player-one-text').text(nameOne + " Score:");
 				$('#player-two-text').text(nameTwo + " Score:");
-			} else if (game==="computerGame") {
+			} else if (newGame==="computerGame") {
 				$('#player-one-text').text("Human Player Score:");
 				$('#player-two-text').text("AI Score:");
 			}
+
+			if (newGame !== game) {
+				player1wins = 0;
+				player2wins = 0;
+				$('#player-one-wins').text("");
+				$('#player-two-wins').text("");			
+			}
+
+			game = newGame;
 
 			var savedBoard = sessionStorage.getItem("board").split(",");
 			var newBoard = [];
@@ -374,8 +383,6 @@ function getCompMove () {
 			$(this).removeClass("saved");
 			board = newBoard;
 			boardSize = newBoardSize;
-			player1wins = 0;
-			player2wins = 0;
 		} else {
 			$('#message-box').children().text("Saved!");
 			sessionStorage.setItem("board", board);
