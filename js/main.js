@@ -13,7 +13,7 @@ $(document).ready(function() {
 	var nameOne = "";
 	var nameTwo = "";
 	
-
+	//setting up the game
 	$('#choose-player').change(function choosePlayerOrAI(){
 		game = $(this).val();
 		resetBoard(boardSize);
@@ -59,11 +59,11 @@ $(document).ready(function() {
 
 	function setBoard (col, row) {
 
-		for (j=0; j<row; j++){
+		for (j=0; j<row; j++){ //creating rows dynamically
 			var createRow = $('<div class="myRow" id="' + j + '"></div>');
-			
 			var columns = [];
-			for (i=0; i<col; i++) {					
+
+			for (i=0; i<col; i++) {	//creating columns 			
 				var piece = $('<div class="square animated flipInX" id="' + i + '"></div>');
 
 				piece.click(function clickBoardPiece(){
@@ -85,16 +85,14 @@ $(document).ready(function() {
 
 						} 
 					} else if (game === "computerGame"){
-						if (win === false && board[rowId][colId] === "") {
+						if (win === false && board[rowId][colId] === "") { //calculating computer move
 							board[rowId][colId] = "Player 1";
 							$(this).css('background-color', 'red');
 
 							if (win === false && click<=(Math.floor((boardSize * boardSize) / 2)-1)) {
-								console.log(
-									Math.floor((boardSize * boardSize) / 2)-1
-								)
 								var compMove = getCompMove();
-								var compBox = $('.myRow').eq(compMove[0]).find('#' + compMove[1]);
+								console.log(compMove);
+								var compBox = $('.myRow').eq(compMove[0]).find('#' + compMove[1]); //using row/col id's to grab the right square
 								function changeToYellow () {
 									compBox.css('background-color', 'yellow');
 								}
@@ -118,7 +116,7 @@ $(document).ready(function() {
 
 
 	function calculateWin () {
-
+		//calc horizontal
 		for (var row=0; row<boardSize; row++) {
 			var allEquals = true;
 				for (var col=0; col<boardSize; col++) {
@@ -130,7 +128,7 @@ $(document).ready(function() {
 					return displayWin(board[row][0]);
 				}
 		}
-
+		//calc vertical
 		for (var col=0; col<boardSize; col++) {
 			var allEquals = true;
 			var rowArr = [];
@@ -144,9 +142,9 @@ $(document).ready(function() {
 					return displayWin(board[0][col]);
 				}
 		}
-
-			var diagOne = [];
-			var diagTwo = [];
+		//calc diagonal
+		var diagOne = [];
+		var diagTwo = [];
 		for (var i=0; i<boardSize; i++) {
 			diagOne.push(board[i][i])
 			diagTwo.push(board[i][boardSize-1-i])
@@ -225,104 +223,126 @@ $(document).ready(function() {
 		resetBoard(boardSize);
 	});
 
-function getCompMove () {
-		//counter horizontal
+	function getCompMove () {
+	//win horizontal
 		for (var row=0; row<boardSize; row++) {
+		var count = 0;
+			for (var col = 0; col < boardSize; col++) {
+				if (board[row][col] === "Player 2") {
+					count++;
+				}	
+				if ((count === (boardSize - 1)) && (board[row].indexOf("") !== -1)) {
+					col = board[row].indexOf("");
+					board[row][col] = "Player 2";
+					console.log(row, col);
+					return [row, col];					
+				}  
+			}	
+		}	
+		//win vertical
+		for (var col=0; col<boardSize; col++) {
+			var count = 0;
+			var rowArr = [];
+			for (var row =0; row < boardSize; row ++) {
+				rowArr.push(board[row][col]);
+				if (board[row][col] === "Player 2") {
+						count++;
+				}			
+				if (count === (boardSize - 1) && rowArr.indexOf("") !== -1) {
+					row = rowArr.indexOf("");
+					board[row][col] = "Player 2";
+					return [row, col];					
+				} 
+			}
+		}
+		//win diagonal right
+		var diagArrOne = [];
+		var diagArrTwo = [];
 		var countOne = 0;
 		var countTwo = 0;
 
-				for (var col = 0; col < boardSize; col++) {
-					if (board[row][col] === "Player 1") {
-						countOne++;
-					}
-					if (board[row][col] === "Player 2") {
-						countTwo++;
-					} 
-						
-					if ((countTwo === (boardSize - 1)) && (board[row].indexOf("") !== -1)) {
-						col = board[row].indexOf("");
-						board[row][col] = "Player 2";
-						return [row, col];					
-					}  else if ((countOne === (boardSize - 1)) && (board[row].indexOf("") !== -1)) {
-						col = board[row].indexOf("");
-						board[row][col] = "Player 2";
-						return [row, col];	
-					}
-				}	
+		for (var i=0; i<boardSize; i++) {
+			diagArrOne.push(board[i][i]);
 		}
-
-		// counter vertical
+		for (var j=0; j<diagArrOne.length; j++) {
+			if (diagArrOne[j] === "Player 2") {
+				countTwo++;					
+			} 
+			if (countTwo === (boardSize -1) && diagArrOne.indexOf("") !== -1) {
+				var row = diagArrOne.indexOf("");
+				board[row][row] = "Player 2";
+				return[ row, row];
+			}
+		}
+		//win diagonal left		
+		var countThree = 0;
+		var countFour = 0;
+		for (var i=0; i<boardSize; i++) {
+			diagArrTwo.push(board[i][(boardSize - 1 - i)]);
+		}
+		for(var k=0; k<diagArrTwo.length; k++) {
+			if (diagArrTwo[k] === "Player 2") {
+				countFour++;		  			
+			} 
+			if (countFour === (boardSize -1) && diagArrTwo.indexOf("") !== -1) {
+				row = diagArrTwo.indexOf("");
+				board[row][boardSize - 1 - row] = "Player 2"
+				return[row, (boardSize-1 -row)];
+			}
+		}
+		//block horizontal
+		for (var row=0; row<boardSize; row++) {
+		var count = 0;
+			for (var col = 0; col < boardSize; col++) {
+				if (board[row][col] === "Player 1") {
+					count++;
+				}	
+				if ((count === (boardSize - 1)) && (board[row].indexOf("") !== -1)) {
+					col = board[row].indexOf("");
+					board[row][col] = "Player 2";
+					console.log(row, col);
+					return [row, col];					
+				}  
+			}	
+		}		
+		//block vertical
 		for (var col=0; col<boardSize; col++) {
-			var countOne = 0;
-			var countTwo = 0;
+			var count = 0;
 			var rowArr = [];
 			for (var row =0; row < boardSize; row ++) {
 				rowArr.push(board[row][col]);
 				if (board[row][col] === "Player 1") {
-						countOne++;
-				}
-				if (board[row][col] === "Player 2") {
-					countTwo++;
-				} 				
-				if (countTwo === (boardSize - 1) && rowArr.indexOf("") !== -1) {
+						count++;
+				}			
+				if (count === (boardSize - 1) && rowArr.indexOf("") !== -1) {
 					row = rowArr.indexOf("");
 					board[row][col] = "Player 2";
 					return [row, col];					
-				}  else if (countOne === (boardSize - 1) && rowArr.indexOf("") !== -1) {
-					row = rowArr.indexOf("");
-					board[row][col] = "Player 2";
-					return [row, col];	
-				}
+				} 
 			}
 		}
-
-		//counter diagonal
-			var diagArrOne = [];
-			var diagArrTwo = [];
-			var countOne = 0;
-			var countTwo = 0;
-
-			for (var i=0; i<boardSize; i++) {
-				diagArrOne.push(board[i][i]);
-				diagArrTwo.push(board[i][(boardSize - 1 - i)]);
+		//block diagonal right
+		for (var j=0; j<diagArrOne.length; j++) {
+			if (diagArrOne[j] === "Player 1") {
+				countOne++;					
+			} 
+			if (countOne === (boardSize -1) && diagArrOne.indexOf("") !== -1) {
+				var row = diagArrOne.indexOf("");
+				board[row][row] = "Player 2";
+				return[ row, row];
 			}
-			for (var j=0; j<diagArrOne.length; j++) {
-				if (diagArrOne[j] === "Player 1") {
-					countOne++;
-				} else if (diagArrOne[j] === "Player 2") {
-					countTwo++;					
-				} 
-				if (countTwo === (boardSize -1) && diagArrOne.indexOf("") !== -1) {
-					var row = diagArrOne.indexOf("");
-					board[row][row] = "Player 2";
-					return[ row, row];
-				}
-				if (countOne === (boardSize -1) && diagArrOne.indexOf("") !== -1) {
-					var row = diagArrOne.indexOf("");
-					board[row][row] = "Player 2";
-					return [row, row];
-				}
+		}
+		//block diagonal left
+		for(var k=0; k<diagArrTwo.length; k++) {
+			if (diagArrTwo[k] === "Player 1") {
+				countThree++;		  			
+			} 
+			if (countThree === (boardSize -1) && diagArrTwo.indexOf("") !== -1) {
+				row = diagArrTwo.indexOf("");
+				board[row][boardSize - 1 - row] = "Player 2"
+				return[row, (boardSize-1 -row)];
 			}
-
-			var countThree = 0;
-			var countFour = 0;
-			for(var k=0; k<diagArrTwo.length; k++) {
-				if (diagArrTwo[k] === "Player 1") {
-					countThree++;
-				} else if (diagArrOne[k] === "Player 2") {
-					countFour++;		  			
-				} 
-				if (countThree === (boardSize -1) && diagArrTwo.indexOf("") !== -1) {
-					row = diagArrTwo.indexOf("");
-					board[row][boardSize - 1 - row] = "Player 2"
-					return[row, (boardSize -1 -row)];
-				}
-				if (countFour === (boardSize -1) && diagArrTwo.indexOf("") !== -1) {
-					row = diagArrTwo.indexOf("");
-					board[row][boardSize - 1 - row] = "Player 2"
-					return[row, (boardSize-1 -row)];
-				}
-			}
+		}
 
 		return findRandomMove();
 
@@ -338,7 +358,7 @@ function getCompMove () {
 		}
 	}
 
-	//fix to make interactive based on initial board length input from user
+	//save
 	$('#save-game').click(function(){
 		if($(this).hasClass("saved")) {
 			var newGame = sessionStorage.getItem("game");
@@ -396,6 +416,4 @@ function getCompMove () {
 		}
 
 	});
-			console.log(click);
-
 });
